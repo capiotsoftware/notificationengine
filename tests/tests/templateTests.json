@@ -1,0 +1,37 @@
+{
+    "testName": "Sample API Tests",
+    "url": [
+        "http://localhost:10010/ne",
+        "http://localhost:10011/usr"
+    ],
+    "globals": [
+        "loginResponse"
+    ],
+    "tests": [{
+            "name": "Login",
+            "endpoint": "2",
+            "request": {
+                "method": "POST",
+                "url": "/login",
+                "responseCode": 200,
+                "payload": {
+                    "username": "admin",
+                    "password": "password"
+                },
+                "saveResponse": "loginResponse"
+            }
+        },
+        {
+            "name": "Fetch Templates",
+            "endpoint": "1",
+            "request": {
+                "method": "GET",
+                "url": "/template",
+                "headers": {
+                    "Authorization": "'JWT ' + loginResponse.token"
+                },
+                "responseCode": 200
+            }
+        }
+    ]
+}

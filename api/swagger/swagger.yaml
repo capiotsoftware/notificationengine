@@ -1,0 +1,710 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Notification Engine API
+host: 'localhost:10010'
+basePath: /ne
+schemes:
+  - http
+  - https
+consumes:
+  - multipart/form-data
+  - application/json;version=1
+produces:
+  - application/json
+  - text/plain
+paths:
+  /template:
+    x-swagger-router-controller: template.controller
+    get:
+      description: Retrieve a list of templates
+      operationId: indexTemplate
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: page
+          in: query
+          type: integer
+          description: Page number of the request
+        - name: count
+          in: query
+          type: integer
+          description: Number of results per page
+        - name: filter
+          in: query
+          type: string
+          description: Filter results based on certain fields
+        - name: select
+          in: query
+          type: string
+          description: Comma seperated fields to be displayed
+        - name: sort
+          in: query
+          type: string
+          description: sort parameter
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '500':
+          description: Internal server error
+    post:
+      description: Create a new template
+      operationId: createTemplate
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Payload to create a template
+          schema:
+            $ref: '#/definitions/template_create'
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '500':
+          description: Internal server error
+  /template/count:
+    x-swagger-router-controller: template.controller
+    get:
+      description: get count of templates
+      operationId: countTemplate
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: filter
+          in: query
+          type: string
+          description: Filter results based on certain fields
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '500':
+          description: Internal server error        
+  '/template/{id}':
+    x-swagger-router-controller: template.controller
+    get:
+      description: Retrieve a template
+      operationId: showTemplate
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: select
+          in: query
+          type: string
+          description: Comma seperated fields to be displayed
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Id of the object to be displayed
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '404':
+          description: No document to list with the given parameter set. 
+        '500':
+          description: Internal server error
+    put:
+      description: Update a template
+      operationId: updateTemplate
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Payload to update a template
+          schema:
+            $ref: '#/definitions/template_update'
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Id of the template to be updated
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '404':
+          description: No document to update with the given parameter set.  
+        '500':
+          description: Internal server error
+    delete:
+      description: Delete a template
+      operationId: destroyTemplate
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Id of the template to be updated
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '404':
+          description: No document to delete with the given parameter set.  
+        '500':
+          description: Internal server error
+  /event:
+    x-swagger-router-controller: event.controller
+    get:
+      description: Retrieve a list of event
+      operationId: indexEvent
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: page
+          in: query
+          type: integer
+          description: Page number of the request
+        - name: count
+          in: query
+          type: integer
+          description: Number of results per page
+        - name: filter
+          in: query
+          type: string
+          description: Filter results based on certain fields
+        - name: select
+          in: query
+          type: string
+          description: Comma seperated fields to be displayed
+        - name: sort
+          in: query
+          type: string
+          description: sort parameter
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '500':
+          description: Internal server error
+    post:
+      description: Create a new event
+      operationId: createEvent
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Payload to create an event
+          schema:
+            $ref: '#/definitions/event_create'
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '500':
+          description: Internal server error
+  /event/count:
+    x-swagger-router-controller: event.controller
+    get:
+      description: get count of event
+      operationId: countEvent
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: filter
+          in: query
+          type: string
+          description: Filter results based on certain fields
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '500':
+          description: Internal server error          
+  '/event/{id}':
+    x-swagger-router-controller: event.controller
+    get:
+      description: Retrieve an event
+      operationId: showEvent
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: select
+          in: query
+          type: string
+          description: Comma seperated fields to be displayed
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Id of the object to be displayed
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '404':
+          description: No document to list with the given parameter set.  
+        '500':
+          description: Internal server error
+    put:
+      description: Update an event
+      operationId: updateEvent
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Payload to update a event
+          schema:
+            $ref: '#/definitions/event_update'
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Id of the event to be updated
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '404':
+          description: No document to update with the given parameter set.  
+        '500':
+          description: Internal server error
+    delete:
+      description: Delete an event
+      operationId: destroyEvent
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Id of the event to be deleted
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '404':
+          description: No document to delete with the given parameter set.  
+        '500':
+          description: Internal server error
+  /subscribe:
+    x-swagger-router-controller: subscription.controller
+    get:
+      description: Retrieve a list of subscription
+      operationId: indexSubscription
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: page
+          in: query
+          type: integer
+          description: Page number of the request
+        - name: count
+          in: query
+          type: integer
+          description: Number of results per page
+        - name: filter
+          in: query
+          type: string
+          description: Filter results based on certain fields
+        - name: select
+          in: query
+          type: string
+          description: Comma seperated fields to be displayed
+        - name: sort
+          in: query
+          type: string
+          description: sort parameter
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '500':
+          description: Internal server error
+    post:
+      description: Create a new subscription
+      operationId: createSubscription
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Payload to create a subscription
+          schema:
+            $ref: '#/definitions/subscription_create'
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '500':
+          description: Internal server error
+  /subscribe/count:
+    x-swagger-router-controller: subscription.controller
+    get:
+      description: get count of subscription
+      operationId: countSubscription
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: filter
+          in: query
+          type: string
+          description: Filter results based on certain fields
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '500':
+          description: Internal server error          
+  '/subscribe/{id}':
+    x-swagger-router-controller: subscription.controller
+    get:
+      description: Retrieve a subscription
+      operationId: showSubscription
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: select
+          in: query
+          type: string
+          description: Comma seperated fields to be displayed
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Id of the object to be displayed
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '404':
+          description: No document to list with the given parameter set.  
+        '500':
+          description: Internal server error
+    put:
+      description: modify recipient list in a subscription
+      operationId: updateRecipients
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Payload to update a subscription
+          schema:
+            $ref: '#/definitions/subscription_update'
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Id of the subscription to be updated
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '404':
+          description: No document to update with the given parameter set.  
+        '500':
+          description: Internal server error
+    delete:
+      description: Delete a subscription
+      operationId: destroySubscription
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Id of the subscription to be deleted
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '404':
+          description: No document to delete with the given parameter set.  
+        '500':
+          description: Internal server error
+  '/unsubscribe/{id}':
+    x-swagger-router-controller: subscription.controller
+    put:
+      description: remove a user in a subscription
+      operationId: removeRecipients
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Payload to update a subscription
+          schema:
+            $ref: '#/definitions/userInSubscription'
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Id of the subscription to be updated
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '404':
+          description: No document to list with the given parameter set.  
+        '500':
+          description: Internal server error
+  /notify:
+    x-swagger-router-controller: triggerEvent.controller
+    post:
+      description: Triggers an event
+      operationId: processEvent
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Payload to trigger an event
+          schema:
+            $ref: '#/definitions/trigger_event'
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '500':
+          description: Internal server error      
+definitions:
+  trigger_event:
+    required:
+      - subscriptionID
+    properties:
+      subscriptionID:
+        type: string
+      earlyEnrichments:
+        type: object
+      attachmentURLs:
+        type: array
+        items:
+          type: string
+  event_create:
+    required:
+      - templateIDs
+      - description
+      - priority
+    properties:
+      templateIDs:
+        type: array
+        items:
+          type: string
+      SMS:
+        properties:
+          name:
+            type: string
+          number:
+            type: string
+      email:
+        properties:
+          name:
+            type: string
+          address:
+            type: string
+      defaultRecipientList:
+        type: array
+        items:
+          required:
+            - type
+            - destination
+          properties:
+            destination:
+              type: string
+            name:
+              type: string
+            type:
+              type: string
+              enum: ['sms', 'email']
+      description:
+        type: string
+      priority:
+        type: number
+        enum: [1, 2]
+  event_update:
+    properties:
+      templateIDs:
+        type: array
+        items:
+          type: string
+      SMS:
+        properties:
+          name:
+            type: string
+          number:
+            type: string
+      email:
+        properties:
+          name:
+            type: string
+          address:
+            type: string
+      defaultRecipientList:
+        type: array
+        items:
+          required:
+            - type
+            - destination
+          properties:
+            destination:
+              type: string
+            name:
+              type: string
+            type:
+              type: string
+              enum: ['sms', 'email']
+      description:
+        type: string
+      priority:
+        type: number      
+  subscription_create:
+    required:
+      - recipients
+      - eventID
+    properties:
+      recipients:
+        type: array
+        items:
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+              enum: ["user", "group"]
+      eventID:
+        type: string
+  subscription_update:
+    properties:
+      recipients:
+        type: array
+        items:
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+              enum: ["user", "group"]
+      eventID:
+        type: string      
+  template_create:
+    required: 
+      - body
+      - type
+    properties:
+      subject:
+        type: string
+      body:
+        type: string
+      type:
+        type: string
+        enum: ["sms", "email"]
+      isGroupMailer:
+        type: boolean
+  template_update:
+    properties:
+      subject:
+        type: string
+      body:
+        type: string
+      type:
+        type: string
+        enum: ["sms", "email"]
+      isGroupMailer:
+        type: boolean      
+  userInSubscription:
+    properties:
+      recipients:
+        type: array
+        items:
+          required:
+            - id
+            - type
+          properties:
+            id:
+              type: string
+            type:
+              type: string
+              enum: ["user", "group"]

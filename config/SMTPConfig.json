@@ -1,0 +1,9 @@
+{
+    "notification.engine55@gmail.com": {
+        "service": "Gmail",
+        "auth": {
+            "user": "notification.engine55@gmail.com",
+            "pass": "notifier"
+        }
+    }
+}
