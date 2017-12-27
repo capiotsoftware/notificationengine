@@ -1,31 +1,28 @@
 "use strict";
 const SwaggerExpress = require("swagger-express-mw");
 const app = require("express")();
-const http = require("http");
+const morgan = require('morgan')
 const cuti = require("cuti");
 const log4js = cuti.logger.getLogger;
-const logger = log4js.getLogger("NotificationEngine");
+const logger = log4js.getLogger("notificationEngine");
 const bluebird = require("bluebird");
 const mongoose = require("mongoose");
 const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/notificationEngine";
-const puttu = require("puttu-redis");
-const redis = require("redis");
-const util = require("util");
-const client = redis.createClient();
-const integration = require('./api/integrations/init');
+const integration = require("./api/integrations/init");
 
-client.on("error", function (err) {
-    logger.error("Redis Disconnected, stopping service");
-    process.exit(0);
-});
+app.use(morgan('combined'));
 
-puttu.init(client);
 cuti.init("ne");
 
 global.Promise = bluebird;
 global.logger = logger;
 mongoose.Promise = global.Promise;
-// mongoose.set("debug", true);
+
+if(process.env.SERVICES){
+    require("./supportServices/user")(10011);
+    require("./supportServices/product")(10012);
+    require("./supportServices/smsGateway")(10013);
+}
 
 mongoose.connect(mongoUrl, {
     useMongoClient: true
@@ -64,16 +61,8 @@ SwaggerExpress.create(config, function (err, swaggerExpress) {
 
     var port = process.env.PORT || 10010;
     app.listen(port, (err) => {
-        if (!err) {
-            puttu.register("ne", {
-                protocol: "http",
-                port: port,
-                api: "/ne"
-            }).catch(err => logger.error(err));
-
-            logger.info("Server started on port " + port);
-        } else
-            logger.error(err);
+        if (!err) logger.info("Server started on port " + port);
+        else logger.error(err);
     });
 
 });

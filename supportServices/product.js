@@ -3,8 +3,6 @@ const app = require("express")();
 const log4js = require("log4js");
 const logger = log4js.getLogger("product");
 
-global.logger = logger;
-
 var counter = 0;
 var logMiddleware = (req, res, next) => {
     var reqId = counter++;
@@ -19,14 +17,14 @@ var logMiddleware = (req, res, next) => {
 app.use(logMiddleware);
 
 var data = [
-    {_id: "PROD1001", "name": "Google Pixel 2", "category": "Smart Phones", "brand": "Google"},
-    {_id: "PROD1002", "name": "Samsung TV", "category": "TV", "brand": "Samsung"},
-    {_id: "PROD1003", "name": "Fair and Lovely 100 mg", "category": "Beauty Products", "brand": "Fair and Lovely"},
-    {_id: "PROD1004", "name": "Ponds Face Cream 200ml", "category": "Beauty Products", "brand": "Ponds"},
-    {_id: "PROD1005", "name": "Cello Food Safe Container 500ml", "category": "Kitchen Utensils", "brand": "Cello"}
+    {_id: "PROD1001", "name": "Google Pixel 2", "category": "Smart Phones", "brand": "Google", "price": 100},
+    {_id: "PROD1002", "name": "Samsung TV", "category": "TV", "brand": "Samsung", "price": 200},
+    {_id: "PROD1003", "name": "Fair and Lovely 100 mg", "category": "Beauty Products", "brand": "Fair and Lovely", "price": 300},
+    {_id: "PROD1004", "name": "Ponds Face Cream 200ml", "category": "Beauty Products", "brand": "Ponds", "price": 400},
+    {_id: "PROD1005", "name": "Cello Food Safe Container 500ml", "category": "Kitchen Utensils", "brand": "Cello", "price": 500}
 ];
 
-app.get('/product/:id', function (req, res) {
+app.get("/product/:id", function (req, res) {
     var product = null;
     data.forEach(_d => {
         if(_d._id == req.params.id) product = _d;
@@ -38,7 +36,7 @@ app.get('/product/:id', function (req, res) {
 function start(_port) {
     app.listen(_port, (err) => {
         if (!err) {
-            logger.info("Server started on port " + _port);
+            logger.info("PRODUCT server started on port " + _port);
         } else
             logger.error(err);
     });

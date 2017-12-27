@@ -1,15 +1,4 @@
 module.exports = {
-    connectionStrings: {
-        amqp: "amqp://localhost",
-        userMngmt: {
-            host: 'localhost',
-            port: 10011,
-            basepath: {                     //base path to fetch user detail with given ID
-                group: '/usr/v1/grp/',
-                user: '/usr/v1/'
-            }
-        }
-    },
     queueNames: {
         email: {
             p1: "emailP1Q",
@@ -23,8 +12,8 @@ module.exports = {
     defaultSMTPconfig:{
         service: "Gmail",
         auth: {
-            user: "notification.engine55@gmail.com",
-            pass: "notifier"
+            user: process.env.SMTP_EMAIL,
+            pass: process.env.SMTP_PASSWD
         }
     },
     retryCounter:{
@@ -32,8 +21,8 @@ module.exports = {
         sms:1
     },
     sms:{
-        api_url:"http://localhost:10012/sendSMS",
-        api_secret:"someSecretCannottell",
-        api_key:"tShouldhavebeenUpperCaseInapi_secret"
+        api_url: process.env.SMS_CONN_STRING,
+        api_secret: process.env.SMS_SECRET,
+        api_key: process.env.SMS_KEY
     }
-}
+};

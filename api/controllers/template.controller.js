@@ -6,7 +6,7 @@ const SMCrud = require("swagger-mongoose-crud");
 const cuti = require("cuti");
 const schema = new mongoose.Schema(definition);
 const logger = global.logger;
-const _ = require('lodash');
+const _ = require("lodash");
 
 var options = {
     logger: logger,
@@ -16,7 +16,7 @@ cuti.counter.setDefaults("template", 1000);
 schema.pre("validate", function (next) {
     this.type = this.type.toLowerCase();
     this.body = _.trim(this.body);
-    this.type === 'email' ? _.trim(this.subject) ? null : next(new Error("Subject is empty")) : null;
+    this.type === "email" ? _.trim(this.subject) ? null : next(new Error("Subject is empty")) : null;
     this.name = _.trim(this.name);
     _.isEmpty(this.name) ? next(new Error("Name is empty")) : null;
     next();

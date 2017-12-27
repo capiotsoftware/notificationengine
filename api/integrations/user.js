@@ -1,5 +1,5 @@
-const http = require('http');
-const _ = require('lodash');
+const http = require("http");
+const _ = require("lodash");
 const cuti = require("cuti");
 const log4js = cuti.logger.getLogger;
 const logger = log4js.getLogger("NotificationEngine");
@@ -7,45 +7,38 @@ const mongoose = require("mongoose");
 
 var e = {};
 e.init = () => {
-    userSchema = {
+    let userSchema = {
         _id: "user",
         definition: ["name"]
-    }
-    mongoose.model('entity').findOne({
-            _id: 'user'
-        })
+    };
+    mongoose.model("entity").findOne({ _id: "user" })
         .then(_d => {
             if (!_d) {
-                mongoose.model('entity').create(userSchema, (err, doc) => {
-                    if (!err) {
-                        logger.info("User Entity :: Added")
-                    }
-                })
-            } else {
-                logger.info("User Entity :: Exist");
+                mongoose.model("entity").create(userSchema, err => {
+                    if (!err) logger.info("User Entity :: Added");
+                });
             }
-        })
-}
+        });
+};
 
 e.fetch = (entity, attribute) => {
-    console.log("entity is ",entity);
     return new Promise((resolve, reject) => {
-        var userID = entity['user'];
+        var userID = entity["user"];
         var options = {
-            host: 'localhost',
+            host: "localhost",
             port: 10011,
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             },
-            path: '/usr/v1/' + entity['user']
+            path: "/usr/v1/" + entity["user"]
         };
         var userDetails = {};
         var request = http.request(options, function (res) {
-            res.on('data', function (data) {
+            res.on("data", function (data) {
                 userDetails = data;
             });
-            res.on('end', function () {
+            res.on("end", function () {
                 // console.log("===1==1=1", userDetails.toString());
                 if (_.isEmpty(userDetails)) {
                     logger.error("User " + userID + " not found");
@@ -63,29 +56,29 @@ e.fetch = (entity, attribute) => {
             });
         });
         request.end();
-        request.on('error', function (err) {
+        request.on("error", function (err) {
             reject(err);
         });
-    })
-}
+    });
+};
 
 e.getUserCommunicationObject = (userID) => {
     return new Promise((resolve, reject) => {
         var options = {
-            host: 'localhost',
+            host: "localhost",
             port: 10011,
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             },
-            path: '/usr/v1/' + userID
+            path: "/usr/v1/" + userID
         };
         var userDetails = {};
         var request = http.request(options, function (res) {
-            res.on('data', function (data) {
+            res.on("data", function (data) {
                 userDetails = data;
             });
-            res.on('end', function () {
+            res.on("end", function () {
                 // console.log("===1==1=1", userDetails.toString());
                 if (_.isEmpty(userDetails)) {
                     logger.error("User " + userID + " not found");
@@ -99,36 +92,36 @@ e.getUserCommunicationObject = (userID) => {
                         name: userDetails.username,
                         emailID: userDetails.contact.email,
                         number: userDetails.contact.phoneNumber
-                    }
+                    };
                     resolve(userInfo);
                 }
             });
         });
         request.end();
-        request.on('error', function (err) {
+        request.on("error", function (err) {
             reject(err);
         });
-    })
-}
+    });
+};
 
 e.getGroupDetails = (groupID) => {
     return new Promise((resolve, reject) => {
 
         var options = {
-            host: 'localhost',
+            host: "localhost",
             port: 10011,
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json"
             },
-            path: '/usr/v1/grp/' + groupID
+            path: "/usr/v1/grp/" + groupID
         };
         var groupDetails = {};
         var request = http.request(options, function (res) {
-            res.on('data', function (data) {
+            res.on("data", function (data) {
                 groupDetails = data;
             });
-            res.on('end', function () {
+            res.on("end", function () {
                 // console.log("===1==1=1", groupDetails);
                 if (_.isEmpty(groupDetails)) {
                     logger.error("Group " + groupID + " not found");
@@ -137,28 +130,25 @@ e.getGroupDetails = (groupID) => {
                 // console.log("---groupdetails inside end", groupDetails.toString());
                 else {
                     groupDetails = JSON.parse(groupDetails);
-                    groupDetails = enrichGrpwithUserDetails(groupDetails)
+                    groupDetails = enrichGrpwithUserDetails(groupDetails);
                     resolve(groupDetails);
                 }
             });
         });
         request.end();
-        request.on('error', function (err) {
-            console.log(err);
-            reject(err);
-        });
-    })
-}
+        request.on("error", err => reject(err));
+    });
+};
 
 function enrichGrpwithUserDetails(groupObj) {
-    return new Promise((resolve, reject) => {
-        var userPromise = groupObj['users'].map(usr => e.getUserCommunicationObject(usr));
+    return new Promise(resolve => {
+        var userPromise = groupObj["users"].map(usr => e.getUserCommunicationObject(usr));
         Promise.all(userPromise)
             .then(users => {
-                groupObj['users'] = users;
+                groupObj["users"] = users;
                 resolve(groupObj);
-            })
-    })
+            });
+    });
 }
 
 module.exports = e;
