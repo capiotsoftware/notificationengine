@@ -549,7 +549,124 @@ paths:
         '400':
           description: Bad parameters
         '500':
-          description: Internal server error      
+          description: Internal server error
+  /entity:
+    x-swagger-router-controller: entity.controller
+    get:
+      description: Retrieve a list of entity
+      operationId: indexEntity
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: page
+          in: query
+          type: integer
+          description: Page number of the request
+        - name: count
+          in: query
+          type: integer
+          description: Number of results per page
+        - name: filter
+          in: query
+          type: string
+          description: Filter results based on certain fields
+        - name: select
+          in: query
+          type: string
+          description: Comma seperated fields to be displayed
+        - name: sort
+          in: query
+          type: string
+          description: sort parameter
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '500':
+          description: Internal server error
+  /entity/count:
+    x-swagger-router-controller: entity.controller
+    get:
+      description: get count of entity
+      operationId: countEntity
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: filter
+          in: query
+          type: string
+          description: Filter results based on certain fields
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '500':
+          description: Internal server error          
+  '/entity/{id}':
+    x-swagger-router-controller: entity.controller
+    get:
+      description: Retrieve an entity
+      operationId: showEntity
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: select
+          in: query
+          type: string
+          description: Comma seperated fields to be displayed
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Id of the object to be displayed
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '404':
+          description: No document to list with the given parameter set.  
+        '500':
+          description: Internal server error
+    put:
+      description: Update a entity
+      operationId: updateEntity
+      parameters:
+        - name: authorization
+          in: header
+          description: token to be passed as a header
+          required: true
+          type: string
+        - name: data
+          in: body
+          description: Payload to update a event
+          schema:
+            $ref: '#/definitions/entity_update'
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: Id of the entity to be updated
+      responses:
+        '200':
+          description: List of the entites
+        '400':
+          description: Bad parameters
+        '404':
+          description: No document to update with the given parameter set.  
+        '500':
+          description: Internal server error              
 definitions:
   trigger_event:
     required:
@@ -568,7 +685,49 @@ definitions:
       - templateIDs
       - description
       - priority
+      - name
     properties:
+      name: 
+        type: string
+      templateIDs:
+        type: array
+        items:
+          type: string
+      sms:
+        properties:
+          name:
+            type: string
+          number:
+            type: string
+      email:
+        properties:
+          name:
+            type: string
+          address:
+            type: string
+      defaultRecipientList:
+        type: array
+        items:
+          required:
+            - type
+            - destination
+          properties:
+            destination:
+              type: string
+            name:
+              type: string
+            type:
+              type: string
+              enum: ['sms', 'email']
+      description:
+        type: string
+      priority:
+        type: number
+        enum: [1, 2]
+  event_update:
+    properties:
+      name: 
+        type: string
       templateIDs:
         type: array
         items:
@@ -603,47 +762,12 @@ definitions:
         type: string
       priority:
         type: number
-        enum: [1, 2]
-  event_update:
-    properties:
-      templateIDs:
-        type: array
-        items:
-          type: string
-      SMS:
-        properties:
-          name:
-            type: string
-          number:
-            type: string
-      email:
-        properties:
-          name:
-            type: string
-          address:
-            type: string
-      defaultRecipientList:
-        type: array
-        items:
-          required:
-            - type
-            - destination
-          properties:
-            destination:
-              type: string
-            name:
-              type: string
-            type:
-              type: string
-              enum: ['sms', 'email']
-      description:
-        type: string
-      priority:
-        type: number      
+        enum: [1, 2]      
   subscription_create:
     required:
       - recipients
       - eventID
+      - name
     properties:
       recipients:
         type: array
@@ -656,6 +780,8 @@ definitions:
               enum: ["user", "group"]
       eventID:
         type: string
+      name:
+        type: string   
   subscription_update:
     properties:
       recipients:
@@ -668,12 +794,17 @@ definitions:
               type: string
               enum: ["user", "group"]
       eventID:
-        type: string      
+        type: string
+      name:
+        type: string        
   template_create:
     required: 
       - body
       - type
+      - name
     properties:
+      name:
+        type: string
       subject:
         type: string
       body:
@@ -685,6 +816,8 @@ definitions:
         type: boolean
   template_update:
     properties:
+      name:
+        type: string
       subject:
         type: string
       body:
@@ -708,3 +841,9 @@ definitions:
             type:
               type: string
               enum: ["user", "group"]
+  entity_update:
+    properties:
+      definition:
+        type: array  
+        items:
+            type: string

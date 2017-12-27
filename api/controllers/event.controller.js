@@ -30,6 +30,8 @@ schema.pre("validate", function (next) {
             // obj.type === 'email' ? isEmail(obj.destination) ? null : next(new Error('invalid email in defaultRecipientList')) : phoneNumPatt.test(obj.destination) ? null : next(new Error('invalid number in defaultRecipientList'));
         });
     }
+    this.name = _.trim(this.name);
+    _.isEmpty(this.name) ? next(new Error("Name is empty")) : null;
     this.description = _.trim(this.description);
     next();
 });

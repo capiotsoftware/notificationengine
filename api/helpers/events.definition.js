@@ -5,6 +5,10 @@ var definition = {
         "type": "String",
         "default": null
     },
+    "name":{
+        "type": "String",
+        "required": true
+    },
     "templateIDs": [
         {
             "type": "String",

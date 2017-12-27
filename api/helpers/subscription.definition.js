@@ -3,6 +3,10 @@ var definition = {
         "type": "String",
         "default": null
     },
+    "name":{
+        "type": "String",
+        "required": true
+    },
     "recipients": [
         {
             "id": {

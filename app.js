@@ -12,6 +12,7 @@ const puttu = require("puttu-redis");
 const redis = require("redis");
 const util = require("util");
 const client = redis.createClient();
+const integration = require('./api/integrations/init');
 
 client.on("error", function (err) {
     logger.error("Redis Disconnected, stopping service");
@@ -33,6 +34,7 @@ mongoose.connect(mongoUrl, {
         logger.error(err);
     } else {
         logger.info("Connected to DB");
+        integration.init();
     }
 });
 
@@ -50,74 +52,10 @@ var logMiddleware = (req, res, next) => {
 
 app.use(logMiddleware);
 
-app.use(function (_req, _res, next) {
-    if (_req.method == "OPTIONS") next();
-    else if (_req.headers["authorization"]) {
-        cuti.request.getUrlandMagicKey("usr").then(options => {
-            options.path = "/usr/validate";
-            options.headers = {
-                "authorization": _req.headers["authorization"],
-                "content-type": "application/json"
-            };
-            var request = http.request(options, function (res) {
-                var body = [];
-                res.on('data', function (data) {
-                    body.push(data);
-                });
-                res.on('end', function () {
-                    var data = body.join('');
-                    if (JSON.parse(data).message) _res.status(401).json(JSON.parse(data));
-                    else {
-                        _req.user = data;
-                        next();
-                    }
-                });
-            });
-            request.end();
-            request.on('error', function (err) {
-                console.log(err);
-            });
-        });
-    } else if (_req.headers.magickey) {
-        puttu.getMagicKey("adv").then(key => key == _req.headers.magickey ? next() : _res.status(401).json({ message: "Unauthorized" }));
-    } else {
-        _res.status(401).json({ message: "Unauthorized" });
-    }
-});
-
-function getPermissionString(contoller) {
-    switch (contoller) {
-        case 'template':
-            return 'canManageTemplates';
-        case 'event':
-            return 'canManageEvents';
-        case 'subscribe':
-            return 'canManageSubscriptions';
-        case 'notify':
-            return 'isAllowedToSendNotifications';
-        default:
-            return new Error("controller not valid");
-    }
-}
-app.use(function (req, res, next) {
-    var contollers = ['template', 'event', 'subscribe', 'notify'];
-    var permissions = JSON.parse(req.user).permissions;
-    contollers.forEach(el => {
-        if (req.originalUrl && req.originalUrl.indexOf(el) != -1) {
-            if (permissions[getPermissionString(el)])
-                next();
-            else { res.status(401).json({ message: "Access denied" }); }
-        }
-    })
-    // next(new Error("Unknown API for permission check"));
-});
-
 var config = {
     appRoot: __dirname
 };
 module.exports = app;
-
-
 
 SwaggerExpress.create(config, function (err, swaggerExpress) {
     if (err) { throw err; }

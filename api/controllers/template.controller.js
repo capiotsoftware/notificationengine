@@ -17,6 +17,8 @@ schema.pre("validate", function (next) {
     this.type = this.type.toLowerCase();
     this.body = _.trim(this.body);
     this.type === 'email' ? _.trim(this.subject) ? null : next(new Error("Subject is empty")) : null;
+    this.name = _.trim(this.name);
+    _.isEmpty(this.name) ? next(new Error("Name is empty")) : null;
     next();
 });
 

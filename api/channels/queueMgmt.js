@@ -130,6 +130,12 @@ function sendEmailP2() {
                 var msgObj = JSON.parse(msg.content.toString('utf8'));
                 ch.ack(msg);
                 email.sendEmail(msgObj['message'], msgObj['email'])
+                    .then(() => {
+                        // do nothing
+                        console.log("Email sent");
+                    }, err => {
+                        logger.error(err.message)
+                    })
             }, {
                 noAck: false
             });
@@ -145,10 +151,11 @@ function sendEmailP1() {
             ch.consume(q, function (msg) {
                 // console.log("Email P1 Msg is ", msg.content.toString('utf8'));
                 var msgObj = JSON.parse(msg.content.toString('utf8'));
-                logger.info("Attempt No ", msgObj['retryCounter']);
+                logger.info("Email, Attempt No ", msgObj['retryCounter']);
                 email.sendEmail(msgObj['message'], msgObj['email'])
                     .then(() => {
                         // do nothing
+                        console.log("Email sent");
                     }, err => {
                         requeue(msgObj, 'email');
                         logger.error(err.message)
@@ -170,6 +177,7 @@ function sendSMSP1() {
             ch.consume(q, function (msg) {
                 // console.log("SMS P1 Msg is ", msg.content.toString('utf8'));
                 var msgObj = JSON.parse(msg.content.toString('utf8'));
+                logger.info("SMS, Attempt No ", msgObj['retryCounter']);
                 sms.sendSMS(msgObj).then(() => {
                     // do nothing
                     console.log("SMS sent");
@@ -194,7 +202,12 @@ function sendSMSP2() {
             ch.consume(q, function (msg) {
                 // console.log("SMS P2 Msg is ", msg.content.toString('utf8'));
                 var msgObj = JSON.parse(msg.content.toString('utf8'));
-                sms.sendSMS(msgObj);
+                sms.sendSMS(msgObj).then(() => {
+                    // do nothing
+                    console.log("SMS sent");
+                }, err => {
+                    console.log(err.message)
+                });
                 ch.ack(msg);
             }, {
                 noAck: false

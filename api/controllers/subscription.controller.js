@@ -18,6 +18,8 @@ schema.pre("validate", function (next) {
     this.recipients.forEach(obj => {
         obj.type = obj.type.toLowerCase();
     })
+    this.name = _.trim(this.name);
+    _.isEmpty(this.name) ? next(new Error("Name is empty")) : null;
     next();
 });
 

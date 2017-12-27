@@ -1,6 +1,14 @@
 module.exports = {
     connectionStrings: {
-        amqp: "amqp://localhost"
+        amqp: "amqp://localhost",
+        userMngmt: {
+            host: 'localhost',
+            port: 10011,
+            basepath: {                     //base path to fetch user detail with given ID
+                group: '/usr/v1/grp/',
+                user: '/usr/v1/'
+            }
+        }
     },
     queueNames: {
         email: {
