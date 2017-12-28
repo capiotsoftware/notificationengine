@@ -41,17 +41,22 @@ var getTokenValue = (token, view) => {
             resolve(tokenVal);
         } else {
             try {
-                const service = require("../integrations/" + token.substring(0, keyIndex));
-                service.fetch(view, token.substring(keyIndex + 1))
-                    .then(tokenVal => {
-                        if (tokenVal)
-                            resolve(tokenVal);
-                        else {
-                            resolve(null);
-                        }
-                    });
+                var servicePath = "../integrations/" + token.substring(0, keyIndex);
+                if(!require.resolve(servicePath))
+                    resolve(null);
+                else{
+                    const service = require(servicePath);
+                    service.fetch(view, token.substring(keyIndex + 1))
+                        .then(tokenVal => {
+                            if (tokenVal)
+                                resolve(tokenVal);
+                            else {
+                                resolve(null);
+                            }
+                        });
+                }
             } catch (e) {
-                resolve(e);
+                resolve(null);
             }
         }
     });
