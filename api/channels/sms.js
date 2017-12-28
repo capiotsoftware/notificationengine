@@ -3,7 +3,7 @@ const envConfig = require("../../config/config");
 const request = require("request");
 
 e.sendSMS = (msgObj) => {
-    // console.log("msgObj is", msgObj);
+    // console.log("msgObj is", msgObj);    
     let reqBody = {
         from: msgObj["from"],
         to: msgObj.message["number"],

@@ -87,14 +87,18 @@ e.getUserCommunicationObject = (userID) => {
                 }
                 else {
                     if (userDetails) {
-                        userDetails = JSON.parse(userDetails.toString());
-                        var userInfo = {
-                            id: userID,
-                            name: userDetails.name,
-                            emailID: userDetails.contact.email,
-                            number: userDetails.contact.phoneNumber
-                        };
-                        resolve(userInfo);
+                        try{
+                            userDetails = JSON.parse(userDetails.toString());
+                            var userInfo = {
+                                id: userID,
+                                name: userDetails.name,
+                                emailID: userDetails.contact.email,
+                                number: userDetails.contact.phoneNumber
+                            };
+                            resolve(userInfo);
+                        }catch(e){
+                            resolve(null);
+                        }
                     } else {
                         resolve(null);
                     }
@@ -135,8 +139,13 @@ e.getGroupDetails = (groupID) => {
                 else {
                     if(groupDetails){
                         groupDetails = JSON.parse(groupDetails);
-                        groupDetails = enrichGrpwithUserDetails(groupDetails);
-                        resolve(groupDetails);
+                        try{
+                            groupDetails = enrichGrpwithUserDetails(groupDetails);
+                            resolve(groupDetails);
+                        }catch(e){
+                            resolve(null);
+                        }
+                        
                     }else{
                         resolve(null);
                     }
