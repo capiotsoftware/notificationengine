@@ -10,7 +10,7 @@ Notification Engine is a service which will send notification to its subscribers
 	4. npm
 	
 ## How to start Notification Engine
-1. git clone from https://bitbucket.org/capiot/ne_notificationengine.git
+1. git clone from https://github.com/capiotsoftware/notificationengine.git
 2. do `npm install`
 3. Update config file in config folder
 4. Start MongoDB, Redis, user management service
