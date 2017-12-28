@@ -15,6 +15,18 @@ Notification Engine is a service which will send notification to its subscribers
 3. Update config file in config folder
 4. Start MongoDB, Redis, user management service
 5. run the service using `node app.js`
+
+## Environment variables
+
+* __PORT__: The port at which Notification Engine should start. The default value is _10010_
+* __MONGO\_URL__: The mongoDB connection string. The default value is _mongodb://localhost/notificationEngine_
+* __RABBIT\_URL__: The RabbitMQ connection string. The default value is _amqp://localhost_
+* __SMTP\_EMAIL__ && __SMTP\_PASSWD__: The email id and password to be used to send out email notification.
+* __SMS\_CONN\_STRING__, __SMS\_SECRET__, __SMS\_KE__: SMS connection details.
+* __SERVICES__: If this is set, then all the support services are started when the notification engine starts.
+* __DEBUG__: If set then the service would start outputiing _debug_ level logs. This is helpful to troubleshoot issue.
+
+
 ## Parts
 1. **User Authorization** : For each API, http request should contain a JWT in header under authorization.  
 2. **Template CRUD** : These are the message templates. It may contain placeholder inside `{{}}`. Value of placeholders can be provided while triggering notify event or can be fetched from usermanagement.
