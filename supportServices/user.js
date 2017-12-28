@@ -25,10 +25,10 @@ var users = [
 ];
 
 var groups = [
-    {"name": "GRP1001", "users": ["USR1001", "USR1002"]},
-    {"name": "GRP1002", "users": ["USR1002", "USR1003"]},
-    {"name": "GRP1003", "users": ["USR1004", "USR10010"]},
-    {"name": "GRP1004", "users": ["USR1006", "USR1007"]}
+    {_id: "GRP1001", "name": "TestGRP1001", "users": ["USR1001", "USR1002"]},
+    {_id: "GRP1002", "name": "TestGRP1002", "users": ["USR1002", "USR1003"]},
+    {_id: "GRP1003", "name": "TestGRP1003", "users": ["USR1004", "USR10010"]},
+    {_id: "GRP1004", "name": "TestGRP1004", "users": ["USR1006", "USR1007"]}
 ];
 
 app.get("/user/:id", function (req, res) {

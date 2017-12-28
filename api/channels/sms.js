@@ -14,7 +14,6 @@ e.sendSMS = (msgObj) => {
     return new Promise((resolve, reject) => {
         var options = {
             url: envConfig.sms.api_url,
-            port: 10013,
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

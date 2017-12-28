@@ -11,7 +11,9 @@ e.init = () => {
         _id: "user",
         definition: ["name"]
     };
-    mongoose.model("entity").findOne({ _id: "user" })
+    mongoose.model("entity").findOne({
+            _id: "user"
+        })
         .then(_d => {
             if (!_d) {
                 mongoose.model("entity").create(userSchema, err => {
@@ -31,7 +33,7 @@ e.fetch = (entity, attribute) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            path: "/usr/v1/" + entity["user"]
+            path: "/user/" + entity["user"]
         };
         var userDetails = {};
         var request = http.request(options, function (res) {
@@ -39,19 +41,18 @@ e.fetch = (entity, attribute) => {
                 userDetails = data;
             });
             res.on("end", function () {
-                // console.log("===1==1=1", userDetails.toString());
                 if (_.isEmpty(userDetails)) {
                     logger.error("User " + userID + " not found");
                     resolve(null);
                 }
                 // console.log("---Userdetails inside end", userDetails.toString());
                 else {
-                    userDetails = JSON.parse(userDetails.toString());
-                    if(userDetails && userDetails[attribute])
-                        resolve(userDetails[attribute]);
-                    else{
+                    if (userDetails) {
+                        userDetails = JSON.parse(userDetails.toString());
+                        userDetails[attribute] ? resolve(userDetails[attribute]) : resolve(null);
+                    } else {
                         resolve(null);
-                    }    
+                    }
                 }
             });
         });
@@ -71,7 +72,7 @@ e.getUserCommunicationObject = (userID) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            path: "/usr/v1/" + userID
+            path: "/user/" + userID
         };
         var userDetails = {};
         var request = http.request(options, function (res) {
@@ -84,16 +85,19 @@ e.getUserCommunicationObject = (userID) => {
                     logger.error("User " + userID + " not found");
                     resolve(null);
                 }
-                // console.log("---Userdetails inside end", userDetails.toString());
                 else {
-                    userDetails = JSON.parse(userDetails.toString());
-                    var userInfo = {
-                        id: userID,
-                        name: userDetails.username,
-                        emailID: userDetails.contact.email,
-                        number: userDetails.contact.phoneNumber
-                    };
-                    resolve(userInfo);
+                    if (userDetails) {
+                        userDetails = JSON.parse(userDetails.toString());
+                        var userInfo = {
+                            id: userID,
+                            name: userDetails.name,
+                            emailID: userDetails.contact.email,
+                            number: userDetails.contact.phoneNumber
+                        };
+                        resolve(userInfo);
+                    } else {
+                        resolve(null);
+                    }
                 }
             });
         });
@@ -114,7 +118,7 @@ e.getGroupDetails = (groupID) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            path: "/usr/v1/grp/" + groupID
+            path: "/group/" + groupID
         };
         var groupDetails = {};
         var request = http.request(options, function (res) {
@@ -129,9 +133,13 @@ e.getGroupDetails = (groupID) => {
                 }
                 // console.log("---groupdetails inside end", groupDetails.toString());
                 else {
-                    groupDetails = JSON.parse(groupDetails);
-                    groupDetails = enrichGrpwithUserDetails(groupDetails);
-                    resolve(groupDetails);
+                    if(groupDetails){
+                        groupDetails = JSON.parse(groupDetails);
+                        groupDetails = enrichGrpwithUserDetails(groupDetails);
+                        resolve(groupDetails);
+                    }else{
+                        resolve(null);
+                    }
                 }
             });
         });
