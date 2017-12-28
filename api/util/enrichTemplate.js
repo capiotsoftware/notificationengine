@@ -1,5 +1,6 @@
 "use strict";
-var tag = ["{{", "}}"];
+const delimiters = require("../../config/config").delimiters;
+var tag = delimiters;
 var e = {};
 
 e.render = (template, view) => {
