@@ -1,0 +1,44 @@
+{
+    "testName": "Template tests",
+    "url": ["http://localhost:10010/ne"],
+    "globals": ["data"],
+    "tests": [{
+        "endpoint": "1",
+        "name": "Template: Fetch all",
+        "request": {
+            "method": "GET",
+            "url": "/template",
+            "responseCode": 200
+        },
+        "response": {
+            "body": [
+                null
+            ]
+        }
+    }, {
+        "endpoint": "1",
+        "name": "Template: Create Email Template",
+        "request": {
+            "method": "POST",
+            "url": "/template",
+            "responseCode": 200,
+            "payload": {
+                "subject": "Order {{orderId}} status",
+                "body": "<p style=\"text-align: center;\"><img class=\"fr-fir fr-dii\" width=\"200\" src=\"https://cdn0.froala.com/assets/editor/pages/B/editor-photo-645d411798e5b4e825765d091dd5aaab.jpg\" alt=\"Editor photo\"></p><p>Hi <strong>{{username}}</strong>,</p><p>Your order with the order id <strong>{{orderId}}</strong>, has been <span style=\"color: rgb(44, 130, 201);\"><u>shipped</u></span> and is expected to reach you by <span style=\"color: rgb(40, 50, 78);\"><strong>{{date}}</strong></span></p><p><em>Regards,</em></p><p><em>Team Captain Logistics</em></p>",
+                "type": "email",
+                "isGroupMailer": false,
+                "name": "Order Email template"
+            }
+        },
+        "response": {
+            "body": {
+                "subject": "Order {{orderId}} status",
+                "body": "<p style=\"text-align: center;\"><img class=\"fr-fir fr-dii\" width=\"200\" src=\"https://cdn0.froala.com/assets/editor/pages/B/editor-photo-645d411798e5b4e825765d091dd5aaab.jpg\" alt=\"Editor photo\"></p><p>Hi <strong>{{username}}</strong>,</p><p>Your order with the order id <strong>{{orderId}}</strong>, has been <span style=\"color: rgb(44, 130, 201);\"><u>shipped</u></span> and is expected to reach you by <span style=\"color: rgb(40, 50, 78);\"><strong>{{date}}</strong></span></p><p><em>Regards,</em></p><p><em>Team Captain Logistics</em></p>",
+                "type": "email",
+                "isGroupMailer": false,
+                "name": "Order Email template",
+                "_id": null
+            }
+        }
+    }]
+}

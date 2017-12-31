@@ -1,5 +1,6 @@
 {
- "name": "Alice Cooper",
+ "_id": "{{data._id}}",
+ "name": "{{data.name}}",
  "address": {
   "line1": "#404 Pritam Woods",
   "line2": "Bellandur",
@@ -14,5 +15,5 @@
   "Beta Cooper",
   "Charlie Cooper"
  ],
- "dateOfBirths": null
+ "dateOfBirths": "12/10/2006"
 }
