@@ -25,5 +25,5 @@ module.exports = {
         api_secret: process.env.SMS_SECRET,
         api_key: process.env.SMS_KEY
     },
-    delimiters:["<<", ">>"]
+    delimiters:["{{", "}}"]
 };
