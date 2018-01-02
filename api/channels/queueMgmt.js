@@ -77,7 +77,7 @@ e.queueEmail = (message, event) => {
     obj["retryCounter"] = 0;
     getChannel(event.priority, "email")
         .then(ch => {
-            logger.info("Adding Email to Q");
+            logger.info("Adding Email to Q: ",q);
             ch.sendToQueue(q, new Buffer(JSON.stringify(obj, null, 4)));
         })
         .catch(err => {
@@ -94,7 +94,7 @@ e.queueSMS = (message, event) => {
     obj["retryCounter"] = 0;
     getChannel(event.priority, "sms")
         .then(ch => {
-            logger.info("Adding SMS to Q");
+            logger.info("Adding SMS to Q: ",q);
             ch.sendToQueue(q, new Buffer(JSON.stringify(obj, null, 4)));
         })
         .catch(err => {
@@ -104,14 +104,15 @@ e.queueSMS = (message, event) => {
 };
 
 
-function requeue(msgObj, type) {
-    var q = type === "email" ? queueEmailP1 : queueSMSP1;
+function requeue(msgObj, type, priority) {
+    var q = getQueue(priority, type);
     msgObj["retryCounter"] += 1;
-    if (msgObj["retryCounter"] > envConfig.retryCounter[type]) {
+    let retryCounter = priority === 1 ? envConfig.retryCounter[type]['p1'] : envConfig.retryCounter[type]['p2']
+    if (msgObj["retryCounter"] > retryCounter) {
         logger.error(type + " failed permanently");
         return;
     }
-    getChannel(1, type).then(ch => {
+    getChannel(priority, type).then(ch => {
         ch.sendToQueue(q, new Buffer(JSON.stringify(msgObj, null, 4)));
     });
 }
@@ -128,6 +129,7 @@ function sendEmailP2() {
                         logger.info("Email sent");
                     }, err => {
                         logger.error(err.message);
+                        requeue(msgObj, "email", 2);
                     });
             }, {
                 noAck: false
@@ -148,7 +150,7 @@ function sendEmailP1() {
                     .then(() => {
                         logger.info("Email sent");
                     }, err => {
-                        requeue(msgObj, "email");
+                        requeue(msgObj, "email", 1);
                         logger.error(err.message);
                     });
                 ch.ack(msg);
@@ -171,7 +173,7 @@ function sendSMSP1() {
                 sms.sendSMS(msgObj).then(() => {
                     logger.info("SMS sent");
                 }, err => {
-                    requeue(msgObj, "sms");
+                    requeue(msgObj, "sms", 1);
                     logger.error(err.message);
                 });
                 ch.ack(msg);
@@ -194,6 +196,7 @@ function sendSMSP2() {
                     logger.info("SMS sent");
                 }, err => {
                     logger.error(err.message);
+                    requeue(msgObj, "sms", 2);
                 });
                 ch.ack(msg);
             }, {

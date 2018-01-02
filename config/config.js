@@ -17,8 +17,14 @@ module.exports = {
         }
     },
     retryCounter:{
-        email:1,
-        sms:1
+        email: {
+            p1: 4,
+            p2: 2
+        },
+        sms: {
+            p1: 4,
+            p2: 2
+        }
     },
     sms:{
         api_url: process.env.SMS_CONN_STRING,
