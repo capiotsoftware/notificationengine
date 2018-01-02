@@ -74,7 +74,7 @@ e.queueEmail = (message, event) => {
     var obj = {};
     obj["message"] = message;
     obj["email"] = event.email;
-    obj["retryCounter"] = 0;
+    obj["retryCounter"] = 1;
     getChannel(event.priority, "email")
         .then(ch => {
             logger.info("Adding Email to Q: ",q);
@@ -91,7 +91,7 @@ e.queueSMS = (message, event) => {
     var obj = {};
     obj["message"] = message;
     obj["from"] = event.sms.number;
-    obj["retryCounter"] = 0;
+    obj["retryCounter"] = 1;
     getChannel(event.priority, "sms")
         .then(ch => {
             logger.info("Adding SMS to Q: ",q);
@@ -124,6 +124,7 @@ function sendEmailP2() {
             ch.consume(q, function (msg) {
                 var msgObj = JSON.parse(msg.content.toString("utf8"));
                 ch.ack(msg);
+                logger.info("Email, Attempt No ", msgObj["retryCounter"]);
                 email.sendEmail(msgObj["message"], msgObj["email"])
                     .then(() => {
                         logger.info("Email sent");
@@ -192,6 +193,7 @@ function sendSMSP2() {
         .then(ch => {
             ch.consume(q, function (msg) {
                 var msgObj = JSON.parse(msg.content.toString("utf8"));
+                logger.info("SMS, Attempt No ", msgObj["retryCounter"]);
                 sms.sendSMS(msgObj).then(() => {
                     logger.info("SMS sent");
                 }, err => {
