@@ -186,6 +186,7 @@ function buildOutboundMessages(_data) {
     var messages = {};
     messages["email"] = [];
     messages["sms"] = [];
+    _data.entity = _data.entity ? _data.entity : {};
     var senderEmail = Object.keys((_data._event.email).toJSON()).length !== 0 ? _data._event["email"] : null;
     var senderNo = Object.keys((_data._event.sms).toJSON()).length !== 0 ? _data._event["sms"] : null;
     if (debugFlag) {

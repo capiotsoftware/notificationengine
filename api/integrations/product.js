@@ -30,7 +30,7 @@ e.fetch = (entity, attribute) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            path: "/product/" + entity["productId"]
+            path: "/product/" + entity["product"]
         };
         var productDetails = {};
         var request = http.request(options, function (res) {
