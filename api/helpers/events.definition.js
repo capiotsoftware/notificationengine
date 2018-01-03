@@ -1,4 +1,3 @@
-const isEmail = require("validator").isEmail;
 var definition = {
     "_id": {
         "type": "String",
@@ -27,7 +26,6 @@ var definition = {
             "type": "String"
         },
         "address": {
-            "validate": [isEmail, "invalid email"],
             "type": "String"
         }
     },

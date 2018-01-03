@@ -38,7 +38,7 @@ var getTokenValue = (token, view) => {
         if (token === ".") {
             resolve(view);
         } else if (keyIndex < 0) {
-            var tokenVal = view[token] ? typeof view[token] === "function" ? view[token]() : view[token] : null;
+            var tokenVal = view[token] ? view[token] : null;
             resolve(tokenVal);
         } else {
             try {

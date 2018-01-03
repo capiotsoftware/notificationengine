@@ -17,13 +17,19 @@ module.exports = {
         }
     },
     retryCounter:{
-        email:1,
-        sms:1
+        email: {
+            p1: 4,
+            p2: 2
+        },
+        sms: {
+            p1: 4,
+            p2: 2
+        }
     },
     sms:{
         api_url: process.env.SMS_CONN_STRING,
         api_secret: process.env.SMS_SECRET,
         api_key: process.env.SMS_KEY
     },
-    delimiters:["<<", ">>"]
+    delimiters:["{{", "}}"]
 };
