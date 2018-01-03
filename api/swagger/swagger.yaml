@@ -556,6 +556,8 @@ definitions:
         type: string
       earlyEnrichments:
         type: object
+      entity:
+        type: object  
       attachmentURLs:
         type: array
         items:
