@@ -1,7 +1,7 @@
 # Notification Engine
 
 ## Introduction
-Notification Engine is a service which will send notification to its subscribers. It will store templates and subscriptions, and only requires event to be triggered when notification needs to be sent. It will support priority of 2 level. A priority 1 notification will be retried in case of failure but priority 2 notification will always be tried only once.
+Notification Engine is a service which will send notification to its subscribers. It will store templates and subscriptions, and only requires event to be triggered when notification needs to be sent. It will support priority of 2 level. Number of retries of each priority message can be configured in config file.
 
 ## Required Software
 	1. RabbitMQ
@@ -40,6 +40,8 @@ Notification Engine is a service which will send notification to its subscribers
 ## Template
 #### Create API
     properties:
+      name: (name of the template)
+        type: string
       subject (In case of Email):
         type: string
       body (HTML supported in case of Email):
@@ -52,10 +54,13 @@ Notification Engine is a service which will send notification to its subscribers
 	required: 
       - body
       - type
+      - name
 
 ## Event
 #### Create API
     properties:
+      name: (name of the event)
+        type: string    
       templateIDs (List of templates needs to be sent):
         type: array
         items:
@@ -95,9 +100,12 @@ Notification Engine is a service which will send notification to its subscribers
       - templateIDs
       - description
       - priority
+      - name
 ## Subscription
 #### Create API
     properties:
+      name: (name of the subscription)
+        type: string
       recipients:
         type: array
         items:
@@ -110,6 +118,7 @@ Notification Engine is a service which will send notification to its subscribers
       eventID:
         type: string
 	required:
+	  - name
       - recipients
       - eventID
 
@@ -119,6 +128,8 @@ Notification Engine is a service which will send notification to its subscribers
         type: string
       earlyEnrichments (Object with key as placeholder and value as placeholder value):
         type: object
+      entity:
+        type: object     
       attachmentURLs (Attachment URL which needs to be sent along with Email):
         type: array
         items:
@@ -127,9 +138,13 @@ Notification Engine is a service which will send notification to its subscribers
       - subscriptionID
 
 ## Integrations
-1. **User Management**: This will be customer side service. It is expected to expose API for user permission check and get user details for notification process. URL can be configured in config file.
+1. **User Management**: This will be customer side service. It is expected to expose API to fetch user details for notification process. Customers are expected to edit getUserCommunicationObject method in user.js under api/integrations folder.
 2. **SMS gateway**: API to send SMS. SMS gateway configuration can be configured in config file.
-3. **Email**: Email notification is in-built process. However, SMTP configuration of sender needs to be configured in SMTPConfig.json file. A default SMTP config also needs to be configured in config file.
+3. **Email**: Email notification is in-built process. However, SMTP configuration of sender needs to be configured in config file.
 4. **MongoDB**: MongoDB as database.
 5. **Redis Server**.
 6. **RabbitMQ**: Message broker to manage Email and SMS notification. Setup configurations in config file.
+7. **Entity**: Customer can integrate their external service to enrich templates. During template enrichment they can provide placeholder with "Service"."attribute". To enrich this placeholder our module will use fetch method in "Service.js" file under api/integration folder. Customers are expected to complete the fetch and init method according to their need. init method is used to record this service in the mongoDB. fetch method will have the logic to enrich the placeholder and should return a promise.
+fetch method will take two arguments -
+    1. entity (provided in the notify API) 
+    2. attribute (attribute which needs to be enriched)
