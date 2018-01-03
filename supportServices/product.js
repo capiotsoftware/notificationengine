@@ -15,6 +15,12 @@ var logMiddleware = (req, res, next) => {
     logger.trace(reqId + " Sending Response");
 };
 app.use(logMiddleware);
+app.use(function(req, res, next){
+    res.header('Access-Control-Allow-Origin','*');
+    res.header('Access-Control-Allow-Headers','Content-Type');
+    res.header('Access-Control-Allow-Methods','GET','POST','PUT','DELETE','OPTIONS');
+    next();
+});
 
 var data = [
     {_id: "PROD1001", "name": "Google Pixel 2", "category": "Smart Phones", "brand": "Google", "price": 100},

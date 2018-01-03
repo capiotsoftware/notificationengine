@@ -15,6 +15,12 @@ var logMiddleware = (req, res, next) => {
     logger.trace(reqId + " Sending Response");
 };
 app.use(logMiddleware);
+app.use(function(req, res, next){
+    res.header('Access-Control-Allow-Origin','*');
+    // res.header('Access-Control-Allow-Headers','Content-Type');
+    res.header('Access-Control-Allow-Methods','GET','OPTIONS');
+    next();
+});
 
 var users = [
     {_id: "USR1001", "name": "Alice", "contact": {"phoneNumber": "+91 99123 11111", "email": "jerrycapiot@gmail.com"}},
@@ -31,6 +37,10 @@ var groups = [
     {_id: "GRP1004", "name": "TestGRP1004", "users": ["USR1006", "USR1007"]}
 ];
 
+app.get("/user", function (req, res) {
+    res.json(users);
+});
+
 app.get("/user/:id", function (req, res) {
     var user = null;
     users.forEach(_d => {
@@ -40,6 +50,9 @@ app.get("/user/:id", function (req, res) {
     else res.status(400).json({"message": "User not found!"});
 });
 
+app.get("/group", function (req, res) {
+    res.json(groups);
+});
 app.get("/group/:id", function (req, res) {
     var group = null;
     groups.forEach(_d => {
