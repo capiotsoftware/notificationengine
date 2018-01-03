@@ -11,7 +11,7 @@ const mongoose = require("mongoose");
 const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/notificationEngine";
 const integration = require("./api/integrations/init");
 
-morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"');
+morgan('[:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"');
 app.use(morgan('combined'));
 
 global.Promise = bluebird;

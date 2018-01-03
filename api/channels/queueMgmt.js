@@ -127,7 +127,7 @@ function sendEmailP2() {
                 logger.info("Email, Attempt No ", msgObj["retryCounter"]);
                 email.sendEmail(msgObj["message"], msgObj["email"])
                     .then(() => {
-                        logger.info("Email sent");
+                        logger.info("Email sent successfully!");
                     }, err => {
                         logger.error(err.message);
                         requeue(msgObj, "email", 2);
@@ -149,7 +149,7 @@ function sendEmailP1() {
                 logger.info("Email, Attempt No ", msgObj["retryCounter"]);
                 email.sendEmail(msgObj["message"], msgObj["email"])
                     .then(() => {
-                        logger.info("Email sent");
+                        logger.info("Email sent successfully!");
                     }, err => {
                         requeue(msgObj, "email", 1);
                         logger.error(err.message);

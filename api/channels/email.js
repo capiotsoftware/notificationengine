@@ -13,7 +13,6 @@ e.sendEmail = message => {
                 reject(error);
                 return;
             }
-            logger.info("Message sent successfully!");
             transport.close();
             resolve();
         });
