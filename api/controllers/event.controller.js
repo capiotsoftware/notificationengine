@@ -30,7 +30,7 @@ schema.pre("validate", function (next) {
             // obj.type === 'email' ? isEmail(obj.destination) ? null : next(new Error('invalid email in defaultRecipientList')) : phoneNumPatt.test(obj.destination) ? null : next(new Error('invalid number in defaultRecipientList'));
         });
     }
-    if(this.email && !(this.email.address && isEmail(this.email.address))){
+    if (!this.email == {} && !(this.email.address && isEmail(this.email.address))) {
         next(new Error('Invalid email address'));
     }
     this.name = _.trim(this.name);
