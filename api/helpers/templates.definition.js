@@ -5,7 +5,8 @@ var definition = {
     },
     "name":{
         "type": "String",
-        "required": true
+        "required": true,
+        "unique": true
     },
     "subject": {
         "type": "String"
