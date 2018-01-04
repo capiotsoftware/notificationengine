@@ -24,12 +24,11 @@ Notification Engine is a service which will send notification to its subscribers
 * __SMTP\_EMAIL__ && __SMTP\_PASSWD__: The email id and password to be used to send out email notification.
 * __SMS\_CONN\_STRING__, __SMS\_SECRET__, __SMS\_KE__: SMS connection details.
 * __SERVICES__: If this is set, then all the support services are started when the notification engine starts.
-* __DEBUG__: If set then the service would start outputiing _debug_ level logs. This is helpful to troubleshoot issue.
+* __LOG\_LEVEL__: log4j log level. If not set default value will be info.
 
 
-## Parts
-1. **User Authorization** : For each API, http request should contain a JWT in header under authorization.  
-2. **Template CRUD** : These are the message templates. It may contain placeholder inside `{{}}`. Value of placeholders can be provided while triggering notify event or can be fetched from usermanagement.
+## Parts  
+2. **Template CRUD** : These are the message templates. It may contain placeholder inside `{{}}`. Value of placeholders can be provided while triggering notify API or can be fetched from usermanagement or can be fetched from external service.
 3. **Event CRUD** : Event will carry information like sender emailID, sender Mobile No, list of templates needs to be sent, default recipient list and priority.
 4. **Subscription CRUD** : This will contain a recipient list corresponding to an event. Recipient list will contain userID  or GroupID of users/groups in usermanagement service.
 5. **Notify API** : The API which will trigger the notification process.
