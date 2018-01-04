@@ -127,8 +127,9 @@ function buildEmailMessage(userDetail, emailTemplate, senderEmailID, attachments
             logger.info("No recipient list");
             resolve(null);
         } else {
+            var sendOption = type === "group" ? "bcc" : "to";
             msg["from"] = senderEmailID;
-            msg["bcc"] = userList.filter(usr => !_.isEmpty(usr)).map(user => user.emailID);
+            msg[sendOption] = userList.filter(usr => !_.isEmpty(usr)).map(user => user.emailID);
             msg["attachments"] = attachments.map(url => {
                 var obj = {};
                 obj["path"] = url;
