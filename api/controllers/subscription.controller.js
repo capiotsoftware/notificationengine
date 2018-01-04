@@ -24,7 +24,6 @@ schema.pre("validate", function (next) {
 });
 
 schema.pre("save", function (next) {
-    // console.log("recipients", this.recipients);
     this.recipients.forEach(recipient => {
         (!recipient.id || !recipient.type) ? next(new Error("id or type missing in recipients")): null;
     });
@@ -34,7 +33,6 @@ schema.pre("save", function (next) {
     mongoose.model("event").findOne({
         "_id": this.eventID
     }, (err, doc) => {
-        // console.log("doc is ", doc);
         if (err) next(new Error("Error querying DB!"));
         else {
             (doc !== null) ? next(): next(new Error("EventID does not exist"));

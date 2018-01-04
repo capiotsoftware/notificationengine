@@ -45,7 +45,6 @@ e.fetch = (entity, attribute) => {
                     logger.error("User " + userID + " not found");
                     resolve(null);
                 }
-                // console.log("---Userdetails inside end", userDetails.toString());
                 else {
                     if (userDetails) {
                         userDetails = JSON.parse(userDetails.toString());
@@ -80,7 +79,6 @@ e.getUserCommunicationObject = (userID) => {
                 userDetails = data;
             });
             res.on("end", function () {
-                // console.log("===1==1=1", userDetails.toString());
                 if (_.isEmpty(userDetails)) {
                     logger.error("User " + userID + " not found");
                     resolve(null);
@@ -130,12 +128,10 @@ e.getGroupDetails = (groupID) => {
                 groupDetails = data;
             });
             res.on("end", function () {
-                // console.log("===1==1=1", groupDetails);
                 if (_.isEmpty(groupDetails)) {
                     logger.error("Group " + groupID + " not found");
                     resolve(null);
                 }
-                // console.log("---groupdetails inside end", groupDetails.toString());
                 else {
                     if(groupDetails){
                         groupDetails = JSON.parse(groupDetails);

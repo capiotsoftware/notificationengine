@@ -578,7 +578,7 @@ definitions:
       sms:
         properties:
           name:
-            type: string
+            type: ["string","null"]
           number:
             type: string
       email:
@@ -614,7 +614,7 @@ definitions:
         type: array
         items:
           type: string
-      SMS:
+      sms:
         properties:
           name:
             type: string
@@ -701,7 +701,7 @@ definitions:
       name:
         type: string
       subject:
-        type: string
+        type: ["string","null"]
       body:
         type: string
       type:

@@ -7,7 +7,6 @@ const enrichTemplate = require("../util/enrichTemplate");
 const log4js = cuti.logger.getLogger;
 const logger = log4js.getLogger("NotificationEngine");
 const _ = require("lodash");
-const debugFlag = process.env.DEBUG || false;
 const userMngmt = require("../integrations/user");
 
 var e = {};
@@ -20,13 +19,11 @@ function generateErrorMessage(_s) {
 }
 
 function getEvent(_id) {
-    // console.log("Inside getEvent");
     return new Promise((resolve, reject) => {
         Mongoose.model("event").findOne({
             _id: _id
         }, (errFind, _d) => {
             if (errFind) reject(errFind);
-            // console.log("getEvent ", _d);
             if (_d) resolve(_d);
             else reject(generateErrorMessage("No active event found with the id " + _id));
         });
@@ -39,7 +36,6 @@ function getTemplate(_id) {
             _id: _id
         }, (errFind, _d) => {
             if (errFind) reject(errFind);
-            // console.log("getTemplates ", _d);
             if (_d) resolve(_d);
             else reject(generateErrorMessage("No active template found with the id " + _id));
         });
@@ -48,7 +44,7 @@ function getTemplate(_id) {
 
 function getSubscriptions(_id) {
     return new Promise((resolve, reject) => {
-        if (debugFlag) logger.trace("id ", _id);
+        logger.trace("id ", _id);
         Mongoose.model("subscription").findOne({
             _id: _id
         }, (errFind, _d) => {
@@ -76,7 +72,7 @@ function createTemplatePromise(templateData, earlyEnrichments) {
 }
 
 function buildTemplates(_data) {
-    if (debugFlag) logger.trace("Event data", JSON.stringify(_data, null, 4));
+    logger.trace("Event data", JSON.stringify(_data, null, 4));
     return new Promise((resolve) => {
         var getTemplatePromises = [];
         _data._event.templateIDs.forEach(templateID => {
@@ -126,7 +122,7 @@ function buildEmailMessage(userDetail, emailTemplate, senderEmailID, attachments
             userList.push(userDetail);
             entity["user"] = userDetail["id"];
         }
-        if (debugFlag) logger.trace("users ", userList);
+        logger.trace("users ", userList);
         if (userList.length === 0) {
             logger.info("No recipient list");
             resolve(null);
@@ -153,7 +149,7 @@ function buildEmailMessage(userDetail, emailTemplate, senderEmailID, attachments
 }
 
 function getUserDetails(userID) {
-    if (debugFlag) logger.trace("userID is", userID);
+    logger.trace("userID is", userID);
     return new Promise((resolve, reject) => {
         if (users[userID]) resolve(users[userID]);
         else {
@@ -168,7 +164,7 @@ function getUserDetails(userID) {
 }
 
 function getGroupDetails(groupID) {
-    if (debugFlag) logger.trace("groupID is", groupID);
+    logger.trace("groupID is", groupID);
     return new Promise((resolve, reject) => {
         if (groups[groupID]) resolve(groups[groupID]);
         else {
@@ -189,10 +185,8 @@ function buildOutboundMessages(_data) {
     _data.entity = _data.entity ? _data.entity : {};
     var senderEmail = Object.keys((_data._event.email).toJSON()).length !== 0 ? _data._event["email"] : null;
     var senderNo = Object.keys((_data._event.sms).toJSON()).length !== 0 ? _data._event["sms"] : null;
-    if (debugFlag) {
-        logger.trace("SenderEmail", senderEmail);
-        logger.trace("senderNo", senderNo);
-    }
+    logger.trace("SenderEmail", senderEmail);
+    logger.trace("senderNo", senderNo);
     return new Promise((resolve, reject) => {
         var subscriptions = {};
         subscriptions["email"] = {};
@@ -212,7 +206,7 @@ function buildOutboundMessages(_data) {
         var SMSPromise = [];
         Promise.all(userPromises)
             .then(_d => {
-                if (debugFlag) logger.trace("Got all users", JSON.stringify(_d, null, 4));
+                logger.trace("Got all users", JSON.stringify(_d, null, 4));
                 _d = _d.filter(obj => !(_.isEmpty(obj)));
                 subscriptions["email"]["users"] = JSON.parse(JSON.stringify(_d));
                 subscriptions["sms"]["users"] = JSON.parse(JSON.stringify(_d));
@@ -229,11 +223,11 @@ function buildOutboundMessages(_data) {
                     subscriptions["sms"]["users"].push(newObj);
                 });
 
-                if (debugFlag) logger.trace("SMS users", subscriptions["sms"]["users"]);
+                logger.trace("SMS users", subscriptions["sms"]["users"]);
             })
             .then(() => Promise.all(groupPromises))
             .then(_d => {
-                if (debugFlag) logger.trace("Got all Groups");
+                logger.trace("Got all Groups");
                 subscriptions["email"]["groups"] = _d;
             })
             .then(() => {
@@ -246,10 +240,10 @@ function buildOutboundMessages(_data) {
                             allUserListSms.push(usr);
                         });
                 });
-                if (debugFlag) {
-                    logger.trace("All user List SMS", allUserListSms);
-                    logger.trace("All user list Email", allUserListEmail);
-                }
+
+                logger.trace("All user List SMS", allUserListSms);
+                logger.trace("All user list Email", allUserListEmail);
+
                 _data.templates.forEach(template => {
                     if (template.type === "email") {
                         if (template.isGroupMailer) {
@@ -285,7 +279,7 @@ function buildOutboundMessages(_data) {
 }
 
 function send(_messages, event) {
-    if (debugFlag) logger.trace(JSON.stringify(_messages, null, 4));
+    logger.trace(JSON.stringify(_messages, null, 4));
     _messages.email.forEach(msg => {
         queueMgmt.queueEmail(msg, event);
     });
