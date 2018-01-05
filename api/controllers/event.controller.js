@@ -30,8 +30,16 @@ schema.pre("validate", function (next) {
             // obj.type === 'email' ? isEmail(obj.destination) ? null : next(new Error('invalid email in defaultRecipientList')) : phoneNumPatt.test(obj.destination) ? null : next(new Error('invalid number in defaultRecipientList'));
         });
     }
-    if (!this.email == {} && !(this.email.address && isEmail(this.email.address))) {
+    if ((!_.isEmpty(JSON.parse(JSON.stringify(this.email)))) && !(this.email.address && isEmail(this.email.address))) {
         next(new Error('Invalid email address'));
+    }
+    if(!_.isEmpty(JSON.parse(JSON.stringify(this.email)))){
+        this.email.name = _.trim(this.email.name)
+        if(!this.email.name)  next(new Error('Invalid name in email object'));
+    }
+    if(!_.isEmpty(JSON.parse(JSON.stringify(this.sms)))){
+        this.sms.name = _.trim(this.sms.name)
+        if(!this.sms.name)  next(new Error('Invalid name in sms object'));
     }
     this.name = _.trim(this.name);
     _.isEmpty(this.name) ? next(new Error("Name is empty")) : null;
