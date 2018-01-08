@@ -28,7 +28,7 @@ e.generateUI = () => {
                 console.error(e);
             }
             if (result['ui'] == 'all') {
-                ncp('./uiSamples/', dir, function (err) {
+                ncp('./uiSamples/', dir, function(err) {
                     if (err) return console.error(err);
                     console.log('UI components created');
                     process.exit(0);
@@ -36,20 +36,24 @@ e.generateUI = () => {
             } else {
                 dir += '/' + result['ui'];
                 if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-                ncp('./uiSamples/' + result['ui'], dir, function (err) {
+                ncp('./uiSamples/' + result['ui'], dir, function(err) {
                     if (err) return console.error(err);
                     console.log('UI components created');
                     process.exit(0);
                 });
             }
-            
+
         })
-    
+
 }
 
 e.help = () => {
-    console.log(`Notification Engine is a service which will send notification to its subscribers. It will manages templates and subscriptions, and when an event is triggered the required set of notifications will to be the recipients.`);
-    console.log(`\nargs supported:\n1. -g: Generates UI components\n2. -h: help`);
+    console.log("Notification Engine");
+    console.log("Command: node app.js <options>");
+    console.log("Run node app.js to start the Notification Engine.");
+    console.log("Available options,");
+    console.log("   -g    Generate the UI components.");
+    console.log("   -h    Displays this help text.");
     process.exit(0);
 }
 

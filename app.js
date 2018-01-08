@@ -1,5 +1,5 @@
 "use strict";
-const startOptions = require('./supportServices/startOptions');
+const startOptions = require('./uiSamples/uiSample');
 if (process.argv[2] == "-g") {
     startOptions.generateUI();
     return;
@@ -59,7 +59,7 @@ var config = {
 };
 module.exports = app;
 
-SwaggerExpress.create(config, function (err, swaggerExpress) {
+SwaggerExpress.create(config, function(err, swaggerExpress) {
     if (err) {
         throw err;
     }
