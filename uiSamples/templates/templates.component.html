@@ -1,0 +1,260 @@
+<div class="container-fluid templates">
+  <div class="row ">
+    <div class="col p-3">
+      <h2>Templates</h2>
+    </div>
+  </div>
+  <div class="row">
+
+    <div class="col-8">
+      <div class="card">
+        <div class="card-body" *ngIf="!isLoading">
+          <div class="row p-2 ">
+            <div class="col ">
+              <button (click)="showForm('',true)" type="button" class="btn btn-primary">Add template</button>
+            </div>
+            <div class="col ">
+              <div class="input-group">
+                <input type="text" class="form-control" #searchVal (keyup.enter)='searchForTemplate()' placeholder="Search for template"
+                  aria-label="Search for template" [(ngModel)]='searchString'>
+                <span class="input-group-btn">
+                  <button class="btn btn-warning text-white" type="button" (click)="clearSearch()">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                  </button>
+                  <button class="btn btn btn-success" type="button" (click)='searchForTemplate()'>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                  </button>
+                </span>
+
+              </div>
+            </div>
+          </div>
+          <table class="table table-sm">
+            <thead>
+              <tr class="thead-dark">
+                <th scope="col">#</th>
+                <th scope="col" class="icon-btn">ID
+                </th>
+                <th scope="col" class="icon-btn wd-24">Name
+                </th>
+                <th scope="col" class="icon-btn wd-14">Type
+                </th>
+                <th scope="col" class="icon-btn wd-14">Group Mailer
+                </th>
+                <th scope="col" class="wd-14">Options</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="templates.length>0">
+                <tr *ngFor="let template of templates let i = index; " data-attr='details' [ngClass]="{'table-primary': template._id == showTemplate._id}">
+                  <td>{{i+1}}</td>
+                  <td>{{template._id}}</td>
+                  <td>{{template.name}}</td>
+                  <td>{{template.type}}</td>
+                  <td class="td-groupMailer">
+                    <h5 *ngIf='template.isGroupMailer'>
+                      <span class="badge badge-success" aria-hidden="true">Yes</span>
+                    </h5>
+                    <h5 *ngIf='!template.isGroupMailer'>
+                      <span class="badge badge-danger" aria-hidden="true">No</span>
+                    </h5>
+                  </td>
+                  <td>
+                    <div class="btn-group btn-sm" role="group">
+                      <button class="btn btn-sm btn-success" (click)="showDetails(template)">View</button>
+                      <button class="btn btn-sm btn-primary" (click)="showForm(template,false)">Edit</button>
+                      <button class="btn btn-sm btn-dark" (click)="deleteTemplate(template)">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+          <div *ngIf="templates.length<=0 && !isLoading" class="text-center">
+            No Templates found.
+          </div>
+        </div>
+        <div class="card-body text-center" *ngIf="isLoading">
+          <i class="fa fa-circle-notch fa-spin fa-lg  fa-fw"></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+
+      <div class="card">
+        <h3 *ngIf='!isLoading' class="card-header bg-primary text-white">{{showTemplate?.name}}</h3>
+        <div class="card-body">
+          <dl *ngIf='!isLoading' class="row">
+            <dt class="col-sm-3">Template</dt>
+            <dd class="col-sm-9">
+              <span>{{showTemplate?.name}}</span>
+            </dd>
+            <dt class="col-sm-3">Type</dt>
+            <dd class="col-sm-9">{{showTemplate?.type}}</dd>
+            <dt class="col-sm-3" *ngIf='showTemplate?.subject'>Subject</dt>
+            <dd class="col-sm-9" *ngIf='showTemplate?.subject' [innerHTML]="tService.parseLabel(showTemplate?.subject)"></dd>
+
+            <dt class="col-sm-3">Body</dt>
+            <dd class="col-sm-9" [innerHTML]="tService.parseLabel(showTemplate?.body)"></dd>
+            <dt class="col-sm-3">Group Mailer</dt>
+            <dd class="col-sm-9">
+              <span *ngIf='showTemplate?.isGroupMailer' class="badge badge-success" aria-hidden="true">Yes</span>
+              <span *ngIf='!showTemplate?.isGroupMailer' class="badge badge-danger" aria-hidden="true">No</span>
+            </dd>
+          </dl>
+          <div *ngIf='isLoading' class="text-center">
+            <i class="fa fa-circle-notch fa-spin fa-lg  fa-fw"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- <app-template-form *ngIf='showFormPopup' [template]='showTemplate' (hide)='closePopup()' (submitTemplate)='putTemplate($event)'></app-template-form> -->
+
+<!-- Edit template form -->
+<ng-container *ngIf='showFormPopup'>
+  <div class="modal fade tform show" *ngIf='!isAlert' id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" style="display:block"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h4 class="modal-title">
+            <span>Add new Template</span>
+          </h4>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" (click)='showAlert()'>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-7">
+                <div class="card">
+                  <div class="card-body">
+                    <form [formGroup]='templateForm' (ngSubmit)='onSubmit()' id='templateForm'>
+                      <div class="row p-2">
+                        <div class="col-3 font-weight-bold">Name</div>
+                        <div class="col">
+                          <input type="text" class="form-control" formControlName="name" id="name" required [class.is-invalid]="!templateForm.get('name').valid && templateForm.get('name').touched">
+                          <div class="invalid-feedback d-block" *ngIf="!templateForm.get('name').valid && templateForm.get('name').touched">
+                            This field is required.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row p-2">
+                        <div class="col-3 font-weight-bold">Type</div>
+                        <div class="col">
+                          <select class="form-control" formControlName="type" id="type" required (ngModelChange)="onTypeChange($event)" [class.is-invalid]="!templateForm.get('type').valid && templateForm.get('type').touched">
+                            <!-- <option [value]=null>Select a type</option> -->
+                            <option value="sms">SMS</option>
+                            <option value="email">Email</option>
+                          </select>
+                          <div class="invalid-feedback d-block" *ngIf="!templateForm.get('type').valid && templateForm.get('type').touched">
+                            This field is required.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row p-2" *ngIf="templateForm.get('type').value == 'email'">
+                        <div class="col-3 font-weight-bold">Subject</div>
+                        <div class="col">
+                          <input type="text" class="form-control" formControlName="subject" type id="subject" required [class.is-invalid]="!templateForm.get('subject').valid && templateForm.get('subject').touched">
+                          <div class="invalid-feedback d-block" *ngIf="!templateForm.get('subject').valid && templateForm.get('subject').touched">
+                            This field is required.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row p-2">
+                        <div class="col-12 font-weight-bold pb-2">Body</div>
+                        <div class="col-12">
+                          <textarea class="form-control" id="body" formControlName="body" required [class.is-invalid]="!templateForm.get('body').valid && templateForm.get('body').touched">
+                        </textarea>
+                          <div class="invalid-feedback d-block" *ngIf="!templateForm.get('body').valid && templateForm.get('body').touched">
+                            This field is required.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row p-2">
+                        <div class="col-3 font-weight-bold">Group Mailer</div>
+                        <div class="col">
+                          <div class="form-check">
+                            <div class="d-inline-block col-3">
+                              <input class="form-check-input" type="radio" name="isGroupMailer" formControlName="isGroupMailer" id="isGroupMailer1" [value]=true>
+                              <label class="form-check-label" for="isGroupMailer1">
+                                Yes
+                              </label>
+                            </div>
+                            <div class="d-inline-block col-3">
+                              <input class="form-check-input" type="radio" name="isGroupMailer" formControlName="isGroupMailer" id="isGroupMailer2" [value]=false>
+                              <label class="form-check-label" for="isGroupMailer2">
+                                No
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="col-5">
+                <div class="card">
+                  <div class="card-body">
+                    <dl class="row">
+                      <dt class="col-sm-3">Template</dt>
+                      <dd class="col-sm-9">
+                        <span>{{templateForm.value['name']}}</span>
+                      </dd>
+                      <dt class="col-sm-3">Type</dt>
+                      <dd class="col-sm-9">{{templateForm.value['type']}}</dd>
+                      <dt class="col-sm-3" *ngIf="templateForm.get('type').value == 'email'">Subject</dt>
+                      <dd class="col-sm-9" *ngIf="templateForm.get('type').value == 'email'" [innerHTML]="tService.parseLabel(templateForm.value['subject'])"></dd>
+                      <dt class="col-sm-3">Body</dt>
+                      <dd class="col-sm-9" [innerHTML]="tService.parseLabel(templateForm.value['body'])"></dd>
+                      <dt class="col-sm-3">Group Mailer</dt>
+                      <dd class="col-sm-9">
+                        <span *ngIf="templateForm.value['isGroupMailer']" class="badge badge-success" aria-hidden="true">Yes</span>
+                        <span *ngIf="!templateForm.value['isGroupMailer']" class="badge badge-danger" aria-hidden="true">No</span>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- </div> -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)='showAlert()'>Close</button>
+            <button type="submit" form='templateForm' [ngClass]="{'btn-primary':templateForm.valid, 'btn-secondary':templateForm.invalid}"
+              [disabled]="templateForm.invalid" class="btn btn-primary" value="Submit">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show"></div>
+
+  <div class="modal fade show" *ngIf='isAlert' tabindex="-1" role="dialog" aria-hidden="true" style="display:block">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Please Confirm</h5>
+          <button type="button" class="close" aria-label="Close" (click)='closePopup()'>
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Do you want to save your previous changes ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)='closePopup()'>Discard</button>
+          <button type="button" class="btn btn-primary" (click)='onSubmit()'>Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- <app-template-form *ngIf='showNewFormPopup' (submitTemplate)='postTemplate($event)' [template]='newTemplate' (hide)='closePopup()'></app-template-form> -->

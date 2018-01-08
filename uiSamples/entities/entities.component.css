@@ -1,0 +1,41 @@
+.fields{
+	background: #eee;
+}
+.footer{
+	position: absolute;
+	bottom: 15px;
+}
+.records{
+	margin-top: 20px;
+	height: calc(100vh - 220px);
+	/* border-bottom: 2px solid #ccc; */
+	/* overflow-y: auto; */
+}
+.entity-detail{
+    border: 2px solid #ccc;
+    height: 390px;
+    overflow-y: auto;
+}
+.entity-list{
+    max-height: 345px;
+    overflow-y: auto;
+}
+.entity-list li:hover, :host >>> .entity-definition li:hover{
+    background-color: #007bff26;
+}
+.entity-list li.active:hover{
+    background-color: #007bff;
+}
+.entity-list li:hover, .entity-detail >>> .entity-definition li .delete, .entity-detail >>> .btn,.btn{
+    cursor: pointer;
+}
+.blue-bold-center{
+    text-align: center;
+    color: #007bff;
+    font-weight: 600;
+}
+.absolute-center{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}

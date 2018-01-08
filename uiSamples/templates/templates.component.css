@@ -1,0 +1,19 @@
+
+.templates .table-striped tbody tr:nth-of-type(odd){
+    background-color: rgba(0,0,0,0.15);
+}
+.btn, .icon-btn, .td-body .badge, :host>>>.btn{
+    cursor:pointer;
+}
+
+.tform .modal-dialog{
+    max-width: 95%;
+}
+.body-content{
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid rgba(0,0,0,.125);
+}
+.modal-footer{
+    padding: 5px 15px;
+}
