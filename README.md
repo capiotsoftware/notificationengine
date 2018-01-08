@@ -31,3 +31,7 @@ Notification Engine is a service which will send notification to its subscribers
 SMTP_EMAIL=johndoe@gmail.com SMTP_PASSWD=******* SMS_CONN_STRING=http://mysmsgateway.com/sendsms SMS_SECRET=thisisansmssecret SMS_KEY=thisisansmskey SERVICES=true nodemon app.js
 
 ```
+
+## Generating Sample UI.
+
+`node app.js -g`

@@ -1,6 +1,7 @@
 "use strict";
 const SwaggerExpress = require("swagger-express-mw");
-const app = require("express")();
+const express = require("express");
+const app = express();
 const morgan = require('morgan')
 var log4js = require("log4js");
 const logger = log4js.getLogger("notificationEngine");
@@ -17,7 +18,8 @@ global.Promise = bluebird;
 global.logger = logger;
 mongoose.Promise = global.Promise;
 
-if(process.env.SERVICES){
+if (process.env.SERVICES) {
+    app.use("/ui", express.static("ui"));
     require("./supportServices/user")(10011);
     require("./supportServices/product")(10012);
     require("./supportServices/smsGateway")(10013);
@@ -53,7 +55,7 @@ var config = {
 };
 module.exports = app;
 
-SwaggerExpress.create(config, function (err, swaggerExpress) {
+SwaggerExpress.create(config, function(err, swaggerExpress) {
     if (err) { throw err; }
 
     swaggerExpress.register(app);

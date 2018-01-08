@@ -1,0 +1,8 @@
+.scrollable-content{
+    min-height: 150px;
+    background: #ddd;
+    overflow-y: auto;   
+}
+.scrollable-content.templates{
+    height: 250px;
+}
