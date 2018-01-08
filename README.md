@@ -1,20 +1,19 @@
 # Notification Engine
 
 ## Introduction
-Notification Engine is a service which will send notification to its subscribers. It will store templates and subscriptions, and only requires event to be triggered when notification needs to be sent. It will support priority of 2 level. Number of retries of each priority message can be configured in config file.
+Notification Engine is a service which will send notification to its subscribers. It will manages templates and subscriptions, and when an event is triggered the required set of notifications will to be the recipients. 
 
 ## Required Software
-	1. RabbitMQ
-	2. MongoDB
-	3. Redis
-	4. npm
+1. Node.js
+2. RabbitMQ
+3. MongoDB
 	
 ## How to start Notification Engine
-1. git clone from https://github.com/capiotsoftware/notificationengine.git
-2. do `npm install`
-3. Update config file in config folder
-4. Start MongoDB, Redis, user management service
-5. run the service using `node app.js`
+1. Clone this repository.
+2. Do an `npm install`
+3. Update config file in config folder with the correct set of values or provide them as environemnt variables to node.
+4. Start MongoDB and RabbitMQ
+5. Run the service using `node app.js`
 
 ## Environment variables
 
@@ -26,124 +25,9 @@ Notification Engine is a service which will send notification to its subscribers
 * __SERVICES__: If this is set, then all the support services are started when the notification engine starts.
 * __LOG\_LEVEL__: log4j log level. If not set default value will be info.
 
+## Sample command to start Notification Engine
 
-## Parts  
-2. **Template CRUD** : These are the message templates. It may contain placeholder inside `{{}}`. Value of placeholders can be provided while triggering notify API or can be fetched from usermanagement or can be fetched from external service.
-3. **Event CRUD** : Event will carry information like sender emailID, sender Mobile No, list of templates needs to be sent, default recipient list and priority.
-4. **Subscription CRUD** : This will contain a recipient list corresponding to an event. Recipient list will contain userID  or GroupID of users/groups in usermanagement service.
-5. **Notify API** : The API which will trigger the notification process.
-6. **SMS gateway**: API to send SMS.
-7. **Email System**: In-built email system to send emails.
-8. **RabbitMQ**: Queue to manage Email and SMS notifications.
-	
-## Template
-#### Create API
-    properties:
-      name: (name of the template)
-        type: string
-      subject (In case of Email):
-        type: string
-      body (HTML supported in case of Email):
-        type: string
-      type (email or SMS):
-        type: string
-        enum: ["sms", "email"]
-      isGroupMailer (Email to be sent in a group or separately):
-        type: boolean
-	required: 
-      - body
-      - type
-      - name
+```sh
+SMTP_EMAIL=johndoe@gmail.com SMTP_PASSWD=******* SMS_CONN_STRING=http://mysmsgateway.com/sendsms SMS_SECRET=thisisansmssecret SMS_KEY=thisisansmskey SERVICES=true nodemon app.js
 
-## Event
-#### Create API
-    properties:
-      name: (name of the event)
-        type: string    
-      templateIDs (List of templates needs to be sent):
-        type: array
-        items:
-          type: string
-      SMS (name and number of the sender):
-        properties:
-          name:
-            type: string
-          number:
-            type: string
-      email (name and email address of sender):
-        properties:
-          name:
-            type: string
-          address:
-            type: string
-      defaultRecipientList (These users will always receive notification when notify with this event is triggered):
-        type: array
-        items:
-          required:
-            - type
-            - destination
-          properties:
-            destination:
-              type: string
-            name:
-              type: string
-            type:
-              type: string
-              enum: ['sms', 'email']
-      description:
-        type: string
-      priority:
-        type: number
-        enum: [1, 2]
-	required:
-      - templateIDs
-      - description
-      - priority
-      - name
-## Subscription
-#### Create API
-    properties:
-      name: (name of the subscription)
-        type: string
-      recipients:
-        type: array
-        items:
-          properties:
-            id:
-              type: string
-            type:
-              type: string
-              enum: ["user", "group"]
-      eventID:
-        type: string
-	required:
-	  - name
-      - recipients
-      - eventID
-
-## Notify API	  
-    properties:
-      subscriptionID:
-        type: string
-      earlyEnrichments (Object with key as placeholder and value as placeholder value):
-        type: object
-      entity:
-        type: object     
-      attachmentURLs (Attachment URL which needs to be sent along with Email):
-        type: array
-        items:
-          type: string
-	required:
-      - subscriptionID
-
-## Integrations
-1. **User Management**: This will be customer side service. It is expected to expose API to fetch user details for notification process. Customers are expected to edit getUserCommunicationObject method in user.js under api/integrations folder.
-2. **SMS gateway**: API to send SMS. SMS gateway configuration can be configured in config file.
-3. **Email**: Email notification is in-built process. However, SMTP configuration of sender needs to be configured in config file.
-4. **MongoDB**: MongoDB as database.
-5. **Redis Server**.
-6. **RabbitMQ**: Message broker to manage Email and SMS notification. Setup configurations in config file.
-7. **Entity**: Customer can integrate their external service to enrich templates. During template enrichment they can provide placeholder with "Service"."attribute". To enrich this placeholder our module will use fetch method in "Service.js" file under api/integration folder. Customers are expected to complete the fetch and init method according to their need. init method is used to record this service in the mongoDB. fetch method will have the logic to enrich the placeholder and should return a promise.
-fetch method will take two arguments -
-    1. entity (provided in the notify API) 
-    2. attribute (attribute which needs to be enriched)
+```
