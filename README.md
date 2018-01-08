@@ -35,3 +35,4 @@ SMTP_EMAIL=johndoe@gmail.com SMTP_PASSWD=******* SMS_CONN_STRING=http://mysmsgat
 ## Generating Sample UI.
 
 `node app.js -g`
+This will promt some questions where you can select UI components that needs to be generated and the folder path.
